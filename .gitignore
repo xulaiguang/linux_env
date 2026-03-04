@@ -1,0 +1,22 @@
+# Git ignore for dotfiles
+
+# Vim swap/undo/backup directories
+.vim/swap/
+.vim/undo/
+.vim/backup/
+.vim/plugged/
+.vim/autoload/plug.vim
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.orig
+*~
