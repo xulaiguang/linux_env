@@ -427,7 +427,83 @@ git clone https://github.com/junegunn/fzf ~/.fzf
 ~/.fzf/install
 ```
 
-### 3. tmux 插件不工作
+### 4. 配色方案不生效（无颜色）
+
+**症状**: 所有文件显示黑白色，配色方案（如 gruvbox）不生效。
+
+**诊断**:
+```bash
+# 检查终端类型
+echo $TERM
+
+# 如果显示 dumb，说明终端不支持颜色
+# 正常应该显示: xterm-256color, tmux-256color, screen-256color 等
+```
+
+**原因**: TERM 环境变量被设为 `dumb`，vim 认为终端不支持颜色。
+
+**解决方案**:
+
+1. **SSH 连接时设置正确的 TERM**:
+   ```bash
+   # 在远程服务器上
+   export TERM=xterm-256color
+   ```
+
+2. **SSH 配置文件** (`~/.ssh/config`):
+   ```
+   Host *
+       SetEnv TERM=xterm-256color
+   ```
+
+3. **Tmux 内设置**:
+   ```bash
+   # 在 tmux 中
+   tmux set -g default-terminal "tmux-256color"
+   ```
+
+4. **永久设置** (添加到 `~/.bashrc`):
+   ```bash
+   export TERM=xterm-256color
+   ```
+
+**自动降级**: 配置已添加自动检测，当 TERM=dumb 时会自动降级到 256 色 desert 配色。
+
+---
+
+### 5. tmux 内 TERM 设置导致问题
+
+**症状**: 进入 tmux 后 vim 配色丢失，TERM 变为 `dumb`。
+
+**原因**: tmux 配置中设置了 `set -g default-terminal "tmux-256color"`，但某些终端或 SSH 环境不识别这个值。
+
+**解决方案**:
+
+1. **检查新设备的 SSH 配置** (`~/.ssh/config`):
+   ```
+   Host *
+       SetEnv TERM=xterm-256color
+   ```
+
+2. **如果 tmux 仍不工作，降级 TERM 值** (在 `~/.tmux.conf.local`):
+   ```bash
+   # 改为更通用的值
+   set -g default-terminal "screen-256color"
+   # 或
+   set -g default-terminal "xterm-256color"
+   ```
+
+3. **临时修复**:
+   ```bash
+   # 进入 tmux 后手动设置
+   export TERM=xterm-256color
+   ```
+
+**说明**: `tmux-256color` 是推荐值，但如果新设备环境特殊，可降级使用。
+
+---
+
+### 6. tmux 插件不工作
 
 ```bash
 # 确保 tpm 安装

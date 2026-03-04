@@ -14,7 +14,7 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # 配置路径
-DOTFILES_DIR="$HOME/dotfiles"
+DOTFILES_DIR=$(cd "$(dirname "$0")" && pwd)
 VIMRC_SOURCE="$DOTFILES_DIR/vim/.vimrc"
 TMUX_SOURCE="$DOTFILES_DIR/tmux/.tmux.conf"
 BACKUP_DIR="$HOME/.config-backup-$(date +%Y%m%d-%H%M%S)"
@@ -200,6 +200,24 @@ install_fzf() {
     fi
 }
 
+install_ripgrep() {
+    log_info "检查/安装 ripgrep..."
+
+    if ! command -v rg &> /dev/null; then
+        # 尝试通过包管理器安装
+        if command -v apt-get &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y ripgrep
+        elif command -v brew &> /dev/null; then
+            brew install ripgrep
+        fi
+    fi
+
+    if command -v rg &> /dev/null; then
+        log_success "ripgrep 已就绪 ($(rg --version))"
+    else
+        log_warn "ripgrep 安装失败，但插件仍可工作"
+    fi
+}
 #=====================================================================
 # 安装 Tmux 插件管理器 (tpm)
 #=====================================================================
@@ -345,6 +363,7 @@ main() {
             setup_vim_dirs
             install_vim_plug
             install_fzf
+            install_ripgrep
             install_tpm
             deploy_config
             install_vim_plugins
@@ -366,6 +385,7 @@ main() {
             setup_vim_dirs
             install_vim_plug
             install_fzf
+            install_ripgrep
             deploy_config
             install_vim_plugins
 
