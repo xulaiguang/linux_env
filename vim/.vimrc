@@ -128,10 +128,13 @@ Plug 'tpope/vim-repeat'
 call plug#end()
 
 "--------------------配色---------------------------------
+" termguicolors 必须在 colorscheme 之前设置，否则配色初始化时用错调色板
+if has('termguicolors')
+    set termguicolors
+endif
 silent! colorscheme gruvbox
 "silent! colorscheme desert
 "silent! colorscheme solarized
-set termguicolors
 
 "--------------------插件配置-----------------------------
 
@@ -210,3 +213,10 @@ autocmd FileType javascript,typescript,json setlocal expandtab shiftwidth=2 soft
 
 " Makefile: 必须用 Tab
 autocmd FileType make setlocal noexpandtab
+
+"--------------------本地配置-----------------------------
+
+" 加载本地配置（不被 dotfiles 覆盖）
+if filereadable(expand('~/.vimrc.local'))
+    source ~/.vimrc.local
+endif

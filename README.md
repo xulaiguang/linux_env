@@ -3,11 +3,14 @@
 ## 快速开始
 
 ```bash
+# 克隆仓库
+git clone <your-git-url> ~/linux_env
+
 # 执行完整安装
-~/dotfiles/setup-env.sh
+~/linux_env/setup-env.sh
 
 # 或逐步操作
-cd ~/dotfiles
+cd ~/linux_env
 ./setup-env.sh
 ```
 
@@ -26,6 +29,7 @@ cd ~/dotfiles
 ### Tmux 配置亮点
 - **前缀键**: Ctrl+a (比默认 Ctrl+b 更顺手)
 - **鼠标支持**: 开启鼠标模式
+- **插件**: tpm + tmux-sensible + tmux-yank
 - **快捷键**:
   - `Ctrl+h/j/k/l` -  pane 间跳转（无需前缀）
   - `\` - 垂直分屏
@@ -37,8 +41,9 @@ cd ~/dotfiles
 - 自动备份现有配置
 - 自动创建目录结构
 - 自动安装 vim-plug
-- 自动安装 fzf
+- 自动安装 fzf + ripgrep
 - 自动安装 tpm (tmux plugin manager)
+- 使用符号链接部署配置（修改即时生效）
 
 ## 使用方法
 
@@ -51,13 +56,14 @@ cd ~/dotfiles
 # 2) 仅安装 Vim
 # 3) 仅安装 Tmux
 # 4) 仅备份当前配置
-# 5) 退出
+# 5) 卸载已安装的配置
+# 6) 退出
 ```
 
 ### 命令行参数
 
 ```bash
-# 完整安装
+# 完整安装（交互式菜单）
 ./setup-env.sh
 
 # 仅 Vim
@@ -69,14 +75,26 @@ cd ~/dotfiles
 # 仅备份
 ./setup-env.sh --backup
 
-# 从备份恢复（交互式）
+# 从备份恢复（交互式选择备份）
 ./setup-env.sh --restore
+
+# 卸载所有配置和插件
+./setup-env.sh --uninstall
+
+# 预览模式（不执行任何操作，只显示将要做什么）
+./setup-env.sh --dry-run
+
+# 组合使用：预览 Vim 安装过程
+./setup-env.sh --dry-run --vim-only
+
+# 显示帮助
+./setup-env.sh --help
 ```
 
 ## 目录结构
 
 ```
-~/dotfiles/
+~/linux_env/
 ├── setup-env.sh      # 一键配置脚本
 ├── README.md         # 本说明文件
 ├── vim/
@@ -84,6 +102,8 @@ cd ~/dotfiles
 └── tmux/
     └── .tmux.conf    # Tmux 配置
 ```
+
+安装后，`~/.vimrc` 和 `~/.tmux.conf` 是指向本仓库配置文件的符号链接，修改仓库中的文件即时生效。
 
 ## 安装后操作
 
@@ -135,22 +155,20 @@ prefix + I  (大写 I)
 
 ### 多设备同步
 
-将 `~/dotfiles` 目录放入 Git 版本控制：
+本仓库已是 Git 管理，直接推送即可：
 
 ```bash
-cd ~/dotfiles
-git init
-git remote add origin <your-git-url>
+cd ~/linux_env
 git add .
-git commit -m "Initial dotfiles"
+git commit -m "update config"
 git push origin main
 ```
 
 ### 在新设备上快速配置
 
 ```bash
-git clone <your-git-url> ~/dotfiles
-~/dotfiles/setup-env.sh
+git clone <your-git-url> ~/linux_env
+~/linux_env/setup-env.sh
 ```
 
 ## 版本要求
@@ -202,7 +220,7 @@ Vim/Tmux 复制  -->  OSC 52 escape sequence  -->  终端  -->  本地剪贴板
 
 ### 各终端支持情况与配置
 
-#### ✅ iTerm2 (macOS)
+#### iTerm2 (macOS)
 
 默认已启用 OSC 52 支持。
 
@@ -213,7 +231,7 @@ iTerm2 → Preferences → General → Selection → Applications in terminal ma
 
 ---
 
-#### ✅ Windows Terminal
+#### Windows Terminal
 
 默认已启用 OSC 52 支持。
 
@@ -233,7 +251,7 @@ iTerm2 → Preferences → General → Selection → Applications in terminal ma
 
 ---
 
-#### ✅ Alacritty (跨平台)
+#### Alacritty (跨平台)
 
 需要 0.13.0+ 版本。
 
@@ -255,7 +273,7 @@ cargo install alacritty --git https://github.com/alacritty/alacritty
 
 ---
 
-#### ⚠️ macOS Terminal.app
+#### macOS Terminal.app
 
 **默认不支持** OSC 52。
 
@@ -268,7 +286,7 @@ cargo install alacritty --git https://github.com/alacritty/alacritty
 
 ---
 
-#### ⚠️ GNOME Terminal
+#### GNOME Terminal
 
 **默认不支持** OSC 52。
 
@@ -284,7 +302,7 @@ sudo apt install kitty          # GPU 加速终端
 
 ---
 
-#### ✅ Kitty (跨平台)
+#### Kitty (跨平台)
 
 默认已启用 OSC 52 支持。
 
@@ -296,7 +314,7 @@ clipboard_control write-primary write-clipboard no-append
 
 ---
 
-#### ✅ foot (Wayland)
+#### foot (Wayland)
 
 默认已启用 OSC 52 支持。
 
@@ -311,13 +329,13 @@ max-size=1048576  # 1MB 限制
 
 ---
 
-#### ✅ WSL (Windows Subsystem for Linux)
+#### WSL (Windows Subsystem for Linux)
 
 **组合方案**：
 
 1. **Windows Terminal + WSL** (推荐):
    ```
-   Windows Terminal → Settings → Profiles → WSL → Copy on select ✓
+   Windows Terminal → Settings → Profiles → WSL → Copy on select
    ```
 
 2. **VcXsrv / WSLg**:
@@ -331,7 +349,7 @@ max-size=1048576  # 1MB 限制
 
 ---
 
-#### ✅ SSH 配置
+#### SSH 配置
 
 **客户端配置** (`~/.ssh/config`):
 ```
@@ -427,7 +445,7 @@ git clone https://github.com/junegunn/fzf ~/.fzf
 ~/.fzf/install
 ```
 
-### 4. 配色方案不生效（无颜色）
+### 3. 配色方案不生效（无颜色）
 
 **症状**: 所有文件显示黑白色，配色方案（如 gruvbox）不生效。
 
@@ -471,7 +489,7 @@ echo $TERM
 
 ---
 
-### 5. tmux 内 TERM 设置导致问题
+### 4. tmux 内 TERM 设置导致问题
 
 **症状**: 进入 tmux 后 vim 配色丢失，TERM 变为 `dumb`。
 
@@ -503,7 +521,7 @@ echo $TERM
 
 ---
 
-### 6. tmux 插件不工作
+### 5. tmux 插件不工作
 
 ```bash
 # 确保 tpm 安装
@@ -529,11 +547,3 @@ let g:ale_enabled = 0  " 禁用 ALE
 # ~/.tmux.conf.local
 set -g mouse off  " 禁用鼠标
 ```
-
----
-
-## 配置版本
-
-- Vim: 基于 vim-plug
-- Tmux: 基于 tpm
-- 生成日期: $(date +%Y-%m-%d)
