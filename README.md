@@ -23,13 +23,14 @@ cd ~/linux_env
 - **语法检查**: ALE 异步检查
 - **状态栏**: vim-airline
 - **Git 集成**: vim-fugitive + vim-gitgutter
-- **代码补全**: auto-pairs, vim-surround
+- **编辑增强**: auto-pairs, vim-surround, vim-repeat
+- **注释工具**: NERDCommenter
 - **配色**: gruvbox + termguicolors
 
 ### Tmux 配置亮点
 - **前缀键**: Ctrl+a (比默认 Ctrl+b 更顺手)
 - **鼠标支持**: 开启鼠标模式
-- **插件**: tpm + tmux-sensible + tmux-yank
+- **插件**: tpm + tmux-resurrect + tmux-continuum (会话持久化)
 - **快捷键**:
   - `Ctrl+h/j/k/l` -  pane 间跳转（无需前缀）
   - `\` - 垂直分屏
@@ -137,7 +138,11 @@ prefix + I  (大写 I)
 | F4 | 开关 NERDTree 文件树 |
 | Ctrl+p | 文件模糊搜索 |
 | leader + / | 全局文本搜索 (Rg) |
+| leader + * | 搜索光标下的词 / 选中文本 |
 | leader + b | Buffer 搜索 |
+| leader + w | 快速保存 |
+| leader + q | 快速退出 |
+| leader + n/p | 下/上一个 Buffer |
 | F8/F9 | 开启/关闭粘贴模式 |
 
 ### Tmux
@@ -145,11 +150,16 @@ prefix + I  (大写 I)
 |--------|------|
 | Ctrl+a | 前缀键 |
 | Ctrl+h/j/k/l | pane 间跳转 |
-| \ | 垂直分屏 |
-| - | 水平分屏 |
+| prefix + \ | 垂直分屏 |
+| prefix + - | 水平分屏 |
+| prefix + H/J/K/L | 调整 pane 大小 |
 | prefix + z | 最大化 pane |
 | prefix + b | 弹出小终端 |
 | prefix + x | 关闭 pane (确认) |
+| prefix + S | 交换 pane 位置 |
+| prefix + R | 重载配置 |
+| prefix + Ctrl-s | 保存会话 (resurrect) |
+| prefix + Ctrl-r | 恢复会话 (resurrect) |
 
 ## 高级用法
 
