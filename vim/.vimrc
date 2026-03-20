@@ -174,6 +174,13 @@ nnoremap <C-p> :Files<CR>
 nnoremap <leader>/ :Rg<CR>
 nnoremap <leader>b :Buffers<CR>
 
+" 光标词/选中文本 → fzf 全局搜索（关键词显示在输入框中，可继续编辑）
+command! -nargs=* RgWord call fzf#vim#grep(
+    \ 'rg --column --line-number --no-heading --color=always --smart-case -- '.fzf#shellescape(<q-args>),
+    \ fzf#vim#with_preview({'options': ['--query', <q-args>]}), 0)
+nnoremap <leader>* :RgWord <C-r>=expand('<cword>')<CR><CR>
+vnoremap <leader>* y:RgWord <C-r>"<CR>
+
 "--------------------按键映射-----------------------------
 
 " F8/F9 粘贴模式
