@@ -33,8 +33,8 @@ cd ~/linux_env
 - **插件**: tpm + tmux-resurrect + tmux-continuum (会话持久化)
 - **快捷键**:
   - `Ctrl+h/j/k/l` -  pane 间跳转（无需前缀）
-  - `\` - 垂直分屏
-  - `-` - 水平分屏
+  - `prefix + \` - 垂直分屏
+  - `prefix + -` - 水平分屏
   - `prefix + z` - 最大化 pane
   - `prefix + I` - 安装插件
 
@@ -202,9 +202,8 @@ git clone <your-git-url> ~/linux_env
 - `set -s set-clipboard on` - 剪贴板同步
 
 **Tmux 2.1-3.1** 兼容，但：
-- `set -g mouse on` → `set -g mode-mouse on`
-- 无 popup 功能
-- 剪贴板功能受限
+- 无 popup 功能（`popup` 命令 3.2+ 才引入）
+- `allow-passthrough` 不可用，OSC 52 剪贴板功能受限
 
 ### 升级方法
 
@@ -288,11 +287,8 @@ cargo install alacritty --git https://github.com/alacritty/alacritty
 **默认不支持** OSC 52。
 
 **解决方案**:
-1. 使用 **iTerm2** 替代（推荐）
-2. 或安装 **iTerm2 shell integration**：
-   ```bash
-   curl -L https://iterm2.com/shell_integration/install_shell_integration.bash | bash
-   ```
+1. 使用 **iTerm2** 替代（推荐，原生支持 OSC 52）
+2. 使用 **Alacritty** 或 **Kitty** 替代
 
 ---
 
@@ -396,8 +392,9 @@ echo "dGVzdA==" | base64 -d
 " 测试 OSC 52 是否工作
 :echo system('echo -n test | base64')
 
-" 查看调试信息
-:verbose function OscYank
+" 查看调试信息（s:OscYank 是脚本局部函数，需用 scriptnames 查找编号）
+:scriptnames
+:verbose function <SNR>1_OscYank
 ```
 
 #### 3. Tmux 剪贴板模式
@@ -439,12 +436,15 @@ Cmd+v
 ### 1. 插件安装失败
 
 ```bash
-# 检查 vim 是否支持 python/python3
-vim --version | grep python
+# 检查网络连通性（vim-plug 从 GitHub 下载插件）
+curl -I https://github.com
 
 # 手动安装插件
 vim
 :PlugInstall
+
+# 查看插件安装错误详情
+:PlugStatus
 ```
 
 ### 2. fzf 不工作
@@ -495,15 +495,13 @@ echo $TERM
    export TERM=xterm-256color
    ```
 
-**自动降级**: 配置已添加自动检测，当 TERM=dumb 时会自动降级到 256 色 desert 配色。
-
 ---
 
 ### 4. tmux 内 TERM 设置导致问题
 
 **症状**: 进入 tmux 后 vim 配色丢失，TERM 变为 `dumb`。
 
-**原因**: tmux 配置中设置了 `set -g default-terminal "tmux-256color"`，但某些终端或 SSH 环境不识别这个值。
+**原因**: tmux 配置中设置了 `set -g default-terminal "xterm-256color"`，但某些特殊环境不识别这个值。
 
 **解决方案**:
 
@@ -527,7 +525,7 @@ echo $TERM
    export TERM=xterm-256color
    ```
 
-**说明**: `tmux-256color` 是推荐值，但如果新设备环境特殊，可降级使用。
+**说明**: 当前配置使用 `xterm-256color`，兼容性最好。如有问题可在 `~/.tmux.conf.local` 中覆盖。
 
 ---
 
