@@ -125,6 +125,8 @@ Plug 'jiangmiao/auto-pairs'
 " 更好的重复操作
 Plug 'tpope/vim-repeat'
 
+Plug 'xulaiguang/glowing-vim-markdown-preview'
+
 call plug#end()
 
 "--------------------配色---------------------------------
